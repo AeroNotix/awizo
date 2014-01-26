@@ -1,4 +1,4 @@
-(defproject awizo "0.0.1"
+(defproject awizo "0.0.2"
   :description "Filesystem events library."
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

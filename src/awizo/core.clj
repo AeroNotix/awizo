@@ -20,7 +20,8 @@
         watch (path->watch path)
         events (seq->event-array event-types)]
     (.register path watch events)
-    (let [watch-key (.take watch)]
-      (doseq [event (.pollEvents watch-key)]
-        (handler event))
-      (recur p handler event-types))))
+    (while true
+      (let [watch-key (.take watch)]
+        (doseq [event (.pollEvents watch-key)]
+          (handler event))
+        (.reset watch-key)))))
