@@ -6,8 +6,6 @@
   (:import [java.util TimerTask]))
 
 
-(def watch->chan (atom {}))
-
 (defn timer-error-handler [timer ex]
   (doseq [ste (.getStackTrace ex)]
     (println ste)))
@@ -53,7 +51,6 @@
         watch (path->watch path)
         events (seq->event-array event-types)]
     (.register path watch events)
-    (swap! watch->chan assoc c watch)
     (let [task (proxy [TimerTask] []
                  (run []
                    (poll watch c)))]
