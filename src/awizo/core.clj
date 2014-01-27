@@ -33,9 +33,6 @@
          (async/>! c event)))
       (.reset watch-key))))
 
-(defn close [c]
-  )
-
 (defn string->path [p]
   (.toPath (clojure.java.io/file p)))
 
