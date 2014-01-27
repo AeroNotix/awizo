@@ -52,4 +52,7 @@
                  (run []
                    (poll watch c)))]
       (schedule-task task))
-    c))
+    (async/go-loop
+     [e (async/<! c)]
+     (handler e)
+     (recur (async/<! c)))))
