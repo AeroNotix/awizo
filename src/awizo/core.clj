@@ -17,7 +17,8 @@
 
 (defn schedule-task [task]
   (send-off timer (fn [t]
-                    (.scheduleAtFixedRate t task periodicity periodicity))))
+                    (doto t
+                      (.scheduleAtFixedRate task periodicity periodicity)))))
 
 (defn poll [watch c]
   (if-let [watch-key (.poll watch)]
