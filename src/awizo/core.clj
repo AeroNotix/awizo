@@ -1,5 +1,5 @@
 (ns awizo.core
-  (:require [clojure.core.async :refer :all])
+  (:require [clojure.core.async :as async])
   (:import [java.nio.file StandardWatchEventKinds])
   (:import [java.nio.file WatchEvent$Kind])
   (:import [java.util Timer])
@@ -29,8 +29,8 @@
   (if-let [watch-key (.poll watch)]
     (do
       (doseq [event (.pollEvents watch-key)]
-        (go
-         (>! c event)))
+        (async/go
+         (async/>! c event)))
       (.reset watch-key))))
 
 (defn string->path [p]
@@ -43,7 +43,7 @@
   (into-array WatchEvent$Kind events))
 
 (defn attach-handler [p handler event-types]
-  (let [c      (chan)
+  (let [c      (async/chan)
         path   (string->path p)
         watch  (path->watch path)
         events (seq->event-array event-types)]
@@ -52,8 +52,8 @@
                  (run []
                    (poll watch c)))]
       (schedule-task task))
-    (go-loop
-     [e (<! c)]
+    (async/go-loop
+     [e (async/<! c)]
      (handler e)
-     (recur (<! c))))
+     (recur (async/<! c))))
   nil)
