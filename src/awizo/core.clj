@@ -7,7 +7,12 @@
 
 
 (def watch->chan (atom {}))
+
+(defn timer-error-handler [timer ex]
+  (doseq [ste (.getStackTrace ex)]
+    (println ste)))
 (def timer       (agent (Timer.)))
+(set-error-handler! timer timer-error-handler)
 (def periodicity (long 500))
 
 (def CREATE StandardWatchEventKinds/ENTRY_CREATE)
