@@ -11,7 +11,7 @@
     (println ste)))
 (def timer       (agent (Timer.)))
 (set-error-handler! timer timer-error-handler)
-(def periodicity (long 500))
+(def periodicity (long 5000))
 
 (def CREATE StandardWatchEventKinds/ENTRY_CREATE)
 (def DELETE StandardWatchEventKinds/ENTRY_DELETE)
