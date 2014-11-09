@@ -31,10 +31,10 @@
 
 (defn schedule-task [task]
   (send-off
-   timer
-   (fn [t]
-     (doto t
-       (.scheduleAtFixedRate task periodicity periodicity)))))
+    timer
+    (fn [t]
+      (doto t
+        (.scheduleAtFixedRate task periodicity periodicity)))))
 
 (defn poll [watch c]
   (if-let [watch-key (.poll watch)]
