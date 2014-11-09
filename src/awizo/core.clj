@@ -7,24 +7,17 @@
   (:import [java.util TimerTask]))
 
 
-(def timer (agent (Timer.)))
 (def periodicity (long 5000))
-(def events-smoother (agent (cache/ttl-cache-factory {} :ttl 1000)))
 (def CREATE StandardWatchEventKinds/ENTRY_CREATE)
 (def DELETE StandardWatchEventKinds/ENTRY_DELETE)
 (def MODIFY StandardWatchEventKinds/ENTRY_MODIFY)
 
-(defn no-recent-events? [uref]
-  (cache/has? @events-smoother uref))
-
-(defn set-recent-event! [uref]
-  (send events-smoother assoc uref true))
 
 (defn make-ref []
   (. clojure.lang.RT (nextID)))
 
-(defn schedule-task [task]
-  (send-off
+(defn schedule-task [timer task]
+  (swap!
     timer
     (fn [t]
       (doto t
@@ -52,15 +45,15 @@
         path   (string->path p)
         watch  (path->watch path)
         events (seq->event-array event-types)
-        uref   (make-ref)]
+        uref   (make-ref)
+        events-smoother (agent (cache/ttl-cache-factory {} :ttl 1000))
+        timer (atom (Timer.))]
     (.register path watch events)
     (let [task (proxy [TimerTask] []
                  (run []
-                   (when (no-recent-events? uref)
-                     (do
-                       (set-recent-event! uref)
-                       (poll watch c)))))]
-      (schedule-task task))
+                   (do
+                     (poll watch c))))]
+      (schedule-task timer task))
     (async/go-loop
         [e (async/<! c)]
       (handler e)

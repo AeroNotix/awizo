@@ -1,4 +1,4 @@
-(defproject awizo "0.0.5"
+(defproject awizo "0.0.11"
   :description "Filesystem events library."
   :url "https://github.com/AeroNotix/awizo"
   :license {:name "Eclipse Public License"
