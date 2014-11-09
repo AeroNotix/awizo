@@ -7,7 +7,7 @@
   (:import [java.util TimerTask]))
 
 
-(def timer       (agent (Timer.)))
+(def timer (agent (Timer.)))
 (def periodicity (long 5000))
 (def events-smoother (agent (cache/ttl-cache-factory {} :ttl 1000)))
 (def CREATE StandardWatchEventKinds/ENTRY_CREATE)
